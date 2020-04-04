@@ -1,8 +1,10 @@
 from django.shortcuts import render
 from .models import VideoResource
 from utilities.forms import VideoForm
+from tenant.views import allow_non_public_view
 
 
+@allow_non_public_view
 def videos(request):
     videos = VideoResource.objects.all()
 

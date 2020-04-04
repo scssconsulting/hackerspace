@@ -1,10 +1,6 @@
 from datetime import timedelta
 
-from comments.forms import CommentForm
-from comments.models import Comment
 from django.contrib.messages.views import SuccessMessageMixin
-from notifications.signals import notify
-
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
@@ -15,14 +11,18 @@ from django.shortcuts import render, get_object_or_404, redirect, Http404
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
+
+from tenant.views import allow_non_public_view, AllowNonPublicViewMixin
+from notifications.signals import notify
+from comments.forms import CommentForm
+from comments.models import Comment
+
 from .forms import AnnouncementForm
 from .tasks import publish_announcement, send_notifications
 from .models import Announcement
 
 
-# function based views..
-
-
+@allow_non_public_view
 @login_required
 def comment(request, ann_id):
     announcement = get_object_or_404(Announcement, pk=ann_id)
@@ -76,11 +76,13 @@ def comment(request, ann_id):
         raise Http404
 
 
+@allow_non_public_view
 @login_required
 def list2(request, ann_id=None):
     return list(request, ann_id, template='announcements/list2.html')
 
 
+@allow_non_public_view
 @login_required
 def list(request, ann_id=None, template='announcements/list.html'):
     if request.user.is_staff:
@@ -120,6 +122,7 @@ def list(request, ann_id=None, template='announcements/list.html'):
     return render(request, template, context)
 
 
+@allow_non_public_view
 @staff_member_required
 def copy(request, ann_id):
     new_ann = get_object_or_404(Announcement, pk=ann_id)
@@ -150,6 +153,7 @@ def copy(request, ann_id):
     return render(request, "announcements/form.html", context)
 
 
+@allow_non_public_view
 @staff_member_required
 def publish(request, ann_id):
     announcement = get_object_or_404(Announcement, pk=ann_id)
@@ -158,7 +162,7 @@ def publish(request, ann_id):
     return redirect(announcement)
 
 
-class Create(SuccessMessageMixin, CreateView):
+class Create(AllowNonPublicViewMixin, SuccessMessageMixin, CreateView):
     model = Announcement
     form_class = AnnouncementForm
     template_name = 'announcements/form.html'
@@ -196,7 +200,7 @@ class Create(SuccessMessageMixin, CreateView):
         return super(Create, self).dispatch(*args, **kwargs)
 
 
-class Update(SuccessMessageMixin, UpdateView):
+class Update(AllowNonPublicViewMixin, SuccessMessageMixin, UpdateView):
     model = Announcement
     form_class = AnnouncementForm
     template_name = 'announcements/form.html'
@@ -223,7 +227,7 @@ class Update(SuccessMessageMixin, UpdateView):
         return super(Update, self).dispatch(*args, **kwargs)
 
 
-class Delete(DeleteView):
+class Delete(AllowNonPublicViewMixin, DeleteView):
     model = Announcement
     template_name = 'announcements/delete.html'
     success_url = reverse_lazy('announcements:list')

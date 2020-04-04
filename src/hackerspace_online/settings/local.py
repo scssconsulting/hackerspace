@@ -1,10 +1,8 @@
-
-
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 from .base import *
 
-#root of project: ...../src
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+# root of project: ...../src
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 # INSTALLED_APPS += (
@@ -25,10 +23,10 @@ DEBUG = True
 
 INTERNAL_IPS = ['127.0.0.1', '0.0.0.0']
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
-EMAIL_FILE_PATH = 'sentmail/' # change this to a proper location
+EMAIL_FILE_PATH = 'sentmail/'  # change this to a proper location
 
 POSTMAN_MAILER_APP = 'django.core.mail'
 # EMAIL_HOST = 'smtp.gmail.com'
@@ -40,22 +38,30 @@ POSTMAN_MAILER_APP = 'django.core.mail'
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
+
 POSTGRES_HOST = os.environ.get('POSTGRES_HOST', '127.0.0.1')
 POSTGRES_PORT = os.environ.get('POSTGRES_PORT', '5432')
-
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    # }
-   'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+    'default': {
+        'ENGINE': 'tenant_schemas.postgresql_backend',
         'NAME': 'postgres',
         'USER': 'postgres',
+        'PASSWORD': 'hellonepal',
         'HOST': POSTGRES_HOST,
         'PORT': POSTGRES_PORT
     }
 }
+
+DATABASE_ROUTERS = (
+    'tenant_schemas.routers.TenantSyncRouter',
+)
+
+TENANT_MODEL = "tenant.Tenant"
+
+DEFAULT_FILE_STORAGE = 'tenant_schemas.storage.TenantFileSystemStorage'
+
+WEB_URL = os.environ.get('WEB_URL', 'localhost')
+
 
 # Static files (CSS, JavaScript, Images) ####################
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
@@ -65,7 +71,7 @@ DATABASES = {
 #STATIC_ROOT = os.path.join(BASE_DIR, "static_in_project",  "static_root")
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static_in_project",  "static_root"),
+    os.path.join(BASE_DIR, "static_in_project", "static_root"),
     # '/var/www/static/',
 )
 

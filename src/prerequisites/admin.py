@@ -1,12 +1,11 @@
 from django import forms
 from django.contrib import admin
 from django.contrib.contenttypes.admin import GenericTabularInline
-# from django.contrib.contenttypes.models import ContentType
+
+from tenant.admin import NonPublicSchemaOnlyAdminAccessMixin
 
 from .models import Prereq, PrereqAllConditionsMet
 
-
-# Register your models here.
 
 class PrereqInlineForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -42,16 +41,14 @@ def auto_name_selected_prereqs(modeladmin, request, queryset):
         prereq.save()
 
 
-class PrereqAdmin(admin.ModelAdmin):
+class PrereqAdmin(NonPublicSchemaOnlyAdminAccessMixin, admin.ModelAdmin):
     list_display = ('id', 'parent', '__str__', 'name')
     actions = [auto_name_selected_prereqs]
 
 
-admin.site.register(Prereq, PrereqAdmin)
-
-
-class PrereqAllConditionsMetAdmin(admin.ModelAdmin):
+class PrereqAllConditionsMetAdmin(NonPublicSchemaOnlyAdminAccessMixin, admin.ModelAdmin):
     list_display = ('id', 'user_id', 'model_name')
 
 
+admin.site.register(Prereq, PrereqAdmin)
 admin.site.register(PrereqAllConditionsMet, PrereqAllConditionsMetAdmin)
