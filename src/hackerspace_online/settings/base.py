@@ -184,8 +184,6 @@ INSTALLED_APPS = (
     'siteconfig',
 )
 
-TENANT_MODEL = "tenant.Tenant"
-
 # http://django-allauth.readthedocs.io/en/latest/installation.html#post-installation
 # SITE_ID = 1
 MIDDLEWARE = [
@@ -193,9 +191,11 @@ MIDDLEWARE = [
     # 'django.middleware.cache.UpdateCacheMiddleware',
     # 'django.middleware.cache.FetchFromCacheMiddleware',
 
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    # tenant_schemas... had to go after the SessionMiddleware or I get this error:
+    # ?: (admin.E410) 'django.contrib.sessions.middleware.SessionMiddleware' must be in MIDDLEWARE in order to use the admin application.
     'tenant_schemas.middleware.TenantMiddleware'
 
-    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -203,8 +203,9 @@ MIDDLEWARE = [
     'django.middleware.locale.LocaleMiddleware',  # used by django-date-time-widget
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    # 'djconfig.middleware.DjConfigMiddleware',
 ]
+
+TENANT_MODEL = "tenant.Tenant"
 
 ROOT_URLCONF = 'hackerspace_online.urls'
 
