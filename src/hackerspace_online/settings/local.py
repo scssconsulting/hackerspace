@@ -56,8 +56,6 @@ DATABASE_ROUTERS = (
     'tenant_schemas.routers.TenantSyncRouter',
 )
 
-TENANT_MODEL = "tenant.Tenant"
-
 DEFAULT_FILE_STORAGE = 'tenant_schemas.storage.TenantFileSystemStorage'
 
 WEB_URL = os.environ.get('WEB_URL', 'localhost')

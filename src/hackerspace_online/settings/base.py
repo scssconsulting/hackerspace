@@ -185,6 +185,8 @@ INSTALLED_APPS = (
     'siteconfig',
 )
 
+TENANT_MODEL = "tenant.Tenant"
+
 # http://django-allauth.readthedocs.io/en/latest/installation.html#post-installation
 # SITE_ID = 1
 MIDDLEWARE = []
@@ -194,6 +196,7 @@ MIDDLEWARE += [
     # 'django.middleware.cache.UpdateCacheMiddleware',
     # 'django.middleware.cache.FetchFromCacheMiddleware',
 
+    'tenant_schemas.middleware.TenantMiddleware'
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
