@@ -12,6 +12,7 @@ from django.core.mail import EmailMultiAlternatives
 
 from django.template.loader import get_template
 
+from tenant_schemas.utils import get_tenant_model, tenant_context
 
 from .models import Notification
 
@@ -61,11 +62,18 @@ def get_notification_emails():
 
 
 @shared_task
-def email_notifications_to_users():
+def send_email_notification_tenant():
     notification_emails = get_notification_emails()
     connection = mail.get_connection()
     connection.send_messages(notification_emails)
     print("Sending {} notification emails.".format(len(notification_emails)))
+
+
+@shared_task
+def email_notifications_to_users():
+    for tenant in get_tenant_model().objects.exclude(schema_name='public'):
+        with tenant_context(tenant):
+            send_email_notification_tenant.delay()
 
 
 PeriodicTask.objects.get_or_create(
@@ -74,12 +82,3 @@ PeriodicTask.objects.get_or_create(
     task='notifications.tasks.email_notifications_to_users',
     queue='default'
 )
-
-# send_mail(
-#     'Test from Django',
-#     'Testing DJango celery beat.',
-#     'timberline.hackerspace@gmail.com',
-#     ['tylere.couture@sd72.bc.ca'],
-#     fail_silently=False,
-# )
-# print("for reals this time")

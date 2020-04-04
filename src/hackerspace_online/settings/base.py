@@ -37,7 +37,71 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 
 # Application definition
 
+SHARED_APPS = (
+    'tenant_schemas',
+    'tenant',
+    'django.contrib.contenttypes',
+
+    'django.contrib.auth',
+    'django.contrib.admin',
+    'django.contrib.sites',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+
+    'django_celery_beat',
+    'postman',
+
+    'grappelli',
+    'crispy_forms',
+    'bootstrap_datepicker_plus',
+    'embed_video',
+    'django_select2',
+    'jchart',
+    'url_or_relative_url_field',
+    'import_export',
+    'colorful',
+)
+
+TENANT_APPS = (
+    'django.contrib.contenttypes',
+
+    'django.contrib.auth',
+    'django.contrib.sessions',
+    'django.contrib.sites',
+    'django.contrib.messages',
+    'django.contrib.admin',
+    'django.contrib.staticfiles',
+
+    'django.contrib.flatpages',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+
+    'attachments',
+    'hackerspace_online',
+    'django_summernote',
+    'postman',
+
+    # local apps
+    'djconfig',
+    'quest_manager',
+    'profile_manager',
+    'announcements',
+    'comments',
+    'notifications',
+    'courses',
+    'prerequisites',
+    'badges',
+    'suggestions',
+    'djcytoscape',
+    'portfolios',
+    'utilities',
+    'siteconfig',
+)
+
 INSTALLED_APPS = (
+    'tenant_schemas',
+    'tenant.apps.TenantConfig',
 
     # http://django-grappelli.readthedocs.org/en/latest/quickstart.html
     'grappelli',
@@ -119,7 +183,6 @@ INSTALLED_APPS = (
     'portfolios',
     'utilities',
     'siteconfig',
-   # 'tours',
 )
 
 # http://django-allauth.readthedocs.io/en/latest/installation.html#post-installation
